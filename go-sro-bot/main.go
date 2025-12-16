@@ -28,10 +28,11 @@ func main() {
 	log.Println("Starte Programm:", programPath)
 
 	// Programm ausführen
-	if err := cmd.Run(); err != nil {
+	if err := cmd.Start(); err != nil {
 		log.Println("Fehler beim Ausführen:", err)
 		os.Exit(1)
 	}
 
+	log.Printf("PID: %v", cmd.Process.Pid)
 	log.Println("Programm erfolgreich beendet")
 }
