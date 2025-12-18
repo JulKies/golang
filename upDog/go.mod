@@ -1,3 +1,3 @@
-module sro-bot
+module upDog
 
 go 1.24.1
