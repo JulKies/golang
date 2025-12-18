@@ -40,6 +40,15 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
+func viewHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/view/"):]
+	page, err := loadPage(title)
+	if err != nil {
+		log.Println("cannot load Page $v", title)
+	}
+	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", page.Title, page.Body)
+}
+
 func main() {
 
 	//logger aufsetzten
@@ -51,5 +60,6 @@ func main() {
 	log.SetOutput(f)
 
 	http.HandleFunc("/", handler)
+	http.HandleFunc("/view/", viewHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
