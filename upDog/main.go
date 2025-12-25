@@ -33,7 +33,7 @@ func loadPage(title string) (*Page, error) {
 		return nil, err
 	}
 
-	return &Page{Title: fileName, Body: body}, nil
+	return &Page{Title: title, Body: body}, nil
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,11 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func saveHandler(w http.ResponseWriter, r *http.Request) {
-
+	title := r.URL.Path[len("/save/"):]
+	body := r.FormValue("body")
+	page := &Page{Title: title, Body: []byte(body)}
+	page.save()
+	http.Redirect(w, r, "/view/"+title, http.StatusFound)
 }
 
 func editHandler(w http.ResponseWriter, r *http.Request) {
