@@ -36,10 +36,6 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: fileName, Body: body}, nil
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-}
-
 func viewHandler(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/view/"):]
 	page, err := loadPage(title)
@@ -47,6 +43,27 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("cannot load Page $v", title)
 	}
 	fmt.Fprintf(w, "<h1>%s</h1><div>%s</div>", page.Title, page.Body)
+}
+
+func saveHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func editHandler(w http.ResponseWriter, r *http.Request) {
+
+	title := r.URL.Path[len("/edit/"):]
+	page, err := loadPage(title)
+	if err != nil {
+		page = &Page{Title: title}
+	}
+
+	fmt.Fprintf(w, "<h1>Editing %s</h1>"+
+		"<form action=\"/save/%s\" method=\"POST\">"+
+		"<textarea name=\"body\">%s</textarea><br>"+
+		"<input type=\"submit\" value=\"Save\">"+
+		"</form>",
+		page.Title, page.Title, page.Body)
+
 }
 
 func main() {
@@ -59,7 +76,8 @@ func main() {
 	defer f.Close()
 	log.SetOutput(f)
 
-	http.HandleFunc("/", handler)
 	http.HandleFunc("/view/", viewHandler)
+	http.HandleFunc("/save/", saveHandler)
+	http.HandleFunc("/edit/", editHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
