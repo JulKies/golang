@@ -41,7 +41,8 @@ func viewHandler(w http.ResponseWriter, r *http.Request) {
 	page, err := loadPage(title)
 
 	if err != nil {
-		log.Println("cannot load Page $v", title)
+		http.Redirect(w, r, "/edit/"+title, http.StatusFound)
+		return
 	}
 	renderTemplate("view", w, page)
 }
